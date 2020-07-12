@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block content %}
+<form method="get">
+    <label>Start date
+        <input type="text" class="sql-text" name="start_date" size="14" maxlength="512" placeholder='= datetime' value="{{ request.args.get('start_date', '-1h') }}">
+    </label>
+    <label>End date
+        <input type="text" class="sql-text" name="end_date" size="14" maxlength="512" placeholder='= datetime' value="{{ request.args.get('end_date', '-0h') }}">
+    </label>
+    <label>Wait class
+        <input type="text" class="sql-text" name="wait_class" size="14" maxlength="512" placeholder='like str' value="{{ request.args.get('wait_class', '') }}">
+    </label>
+    <label>Event
+        <input type="text" class="sql-text" name="event" size="14" maxlength="512" placeholder='like str' value="{{ request.args.get('event', '') }}">
+    </label>
+    <label>Session id
+        <input type="text" class="sql-text" name="session_id" size="14" maxlength="512" placeholder='= int' value="{{ request.args.get('session_id', '') }}">
+    </label>
+    <label>User name
+        <input type="text" class="sql-text" name="user_name" size="14" maxlength="512" placeholder='like str' value="{{ request.args.get('user_name', '') }}">
+    </label>
+    <label>SQL id
+        <input type="text" class="sql-text" name="sql_id" size="14" maxlength="512" placeholder='= str' value="{{ request.args.get('sql_id', '') }}">
+    </label>
+    <label>Object name
+        <input type="text" class="sql-text" name="object_name" size="14" maxlength="512" placeholder='like str' value="{{ request.args.get('object_name', '') }}">
+    </label>
+    <input type="hidden" name="do">
+    <input type="submit" value="Run">
+    <span class="form-caption" title="This view could be very slow...">&#128012</span>
+</form>
+{% include 'flashed.html' %}
+<div>
+<span>
+{% if top_activity is defined %}
+    <embed type="image/svg+xml" src="{{ top_activity }}" />
+{% endif %}
+</span>
+{% if top_waits is defined and top_waits is not none %}
+<span>
+    <embed type="image/svg+xml" src="{{ top_waits }}" />
+</span>
+{% endif %}
+</div>
+<div>
+{% if top_sql is defined and top_sql is not none %}
+<span>
+    <embed type="image/svg+xml" src="{{ top_sql }}" />
+</span>
+{% endif %}
+{% if top_sessions is defined and top_sessions is not none %}
+<span>
+    <embed type="image/svg+xml" src="{{ top_sessions }}" />
+</span>
+{% endif %} {% if top_objects is defined %}
+<span>
+    <embed type="image/svg+xml" src="{{ top_objects }}" />
+</span>
+{% endif %}
+</div>
+{% endblock %}

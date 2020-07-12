@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <title>{{ g.title.get(request.endpoint, 'Watch') }} {{ request.view_args.values()|list|last }}</title>
+</head>
+<body>
+    <div class="flex-container">
+        <div class="flex-header">
+            <div><a href="{{ url_for('get_welcome_page') }}" target="_blank"><div><div style="text-align:center; width:160px; font-family:serif;font-size:22pt;">W🔥TCH</div><div style="text-align:center; font-family:serif;font-size:14pt;">love is control</div></div></a></div>
+            <div class="targets">
+                <form method="get">
+                    {% for item in config['USERS'][session['user_name']][2] %}
+                    <input type="submit" value="{{ item }}"
+                           class="{% if item == request.view_args.get('target') %}selected{% endif %}"
+                           formaction="{% if 'target' in request.view_args and request.view_args.keys()|length == 1 and (request.endpoint not in config['TARGET_SPECIFIC_VIEWS'].keys() or item in config['TARGET_SPECIFIC_VIEWS'][request.endpoint]) %}{{ url_for(request.endpoint, target=item) }}{% else %}{{ url_for('get_target', target=item) }}{% endif %}">
+                    {% endfor %}
+                </form>
+            </div>
+            {% if 'target' in request.view_args %}
+            <div>
+                <div class="page-stat-hint">{{ get_page_stats }}</div>
+                <form method="get" action="{{ url_for('search', target=request.view_args['target']) }}">
+                    <input type="search" name="text" minlength=3 maxlength=13 placeholder="Search sql or session" required>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        <div class="flex-body">
+            <div class="flex-menu">
+                {% set menu_tree = config['MENU_TREE'] %}
+                {% for top_item in menu_tree.keys() %}
+                    {% if top_item == request.endpoint or menu_tree[top_item][0] == 'user' or request.view_args.get(menu_tree[top_item][0]) %}
+                        <a href="{{ url_for(top_item, **request.view_args) }}" class="top-menu-item{% if top_item == request.endpoint %} selected{% endif %}">{% if top_item == 'get_user' %}{{ session['user_name'] }}{% else %}{{ g.title[top_item] }}{% endif %}</a>
+                    {% endif %}
+                    {% if request.endpoint in menu_tree[top_item][1] or request.endpoint == top_item %}
+                        {% for sub_item in menu_tree[top_item][1] %}
+                            {% if sub_item not in config['TARGET_SPECIFIC_VIEWS'].keys() or request.view_args.get('target', '') in config['TARGET_SPECIFIC_VIEWS'][sub_item] %}
+                                <a href="{{ url_for(sub_item, **request.view_args) }}" class="sub-menu-item{% if request.endpoint == sub_item %} selected{% endif %}">{{ g.title[sub_item] }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="flex-content">
+                <div class="form-caption">{{ g.title[request.endpoint] }}
+                    {%- for item in request.view_args.values() -%}
+                        <span class="caption-sep"> / </span>{{ item }}
+                    {%- endfor -%}
+                </div>
+                {% if g.view_doc %}<div style="width: 70%">{{ g.view_doc }}</div><br>{% endif %}
+{% block content %}
+{% if text is defined %}
+                <div>{{ text }}</div>
+{% endif %}
+{% if formatted_text is defined %}
+                <pre>{{ formatted_text }}</pre>
+{% endif %}
+{% endblock %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <div class="message-page">
+        <div class="message-form">
+           <div class="view-error">{{ e }}</div>
+           <div class="view-error">Ask your system administrator, what is that.</div>
+           <br>
+           <button onclick="history.back();">Ok, get back</button>
+       </div>
+    </div>
+</body>
+</html>

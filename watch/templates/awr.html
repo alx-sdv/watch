@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+<form method="get">
+    <label>Begin snapshot
+        <select type="text" class="sql-text" name="bid" size="1" autofocus>
+            {% for item in snapshots %}
+            <option value="{{ item[0] }}"{% if request.args.get('bid', '') == item[0]|string %} selected{% endif %}>{{ item[1] }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>End snapshot
+        <select type="text" class="sql-text" name="eid" size="1">
+            {% for item in snapshots %}
+            <option value="{{ item[0] }}"{% if request.args.get('eid', '') == item[0]|string %} selected{% endif %}>{{ item[1] }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>SQL id
+        <input type="text" class="sql-text" name="sql_id" size="14" maxlength="512" value="{{ request.args.get('sql_id', '') }}">
+    </label>
+    <input type="hidden" name="do">
+    <input type="submit" value="Run">
+</form>
+{% include 'flashed.html' %}
+{% if data %}
+{% if request.args.get('sql_id', '') %}
+    <a name="top"></a>
+{% endif %}
+{% for item in data %}
+    {{ item|safe }}
+{% endfor %}
+{% endif %}
+{% endblock %}

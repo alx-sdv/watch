@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+<form method="get">
+    <label>Begin date
+        <input type="text" class="sql-text" name="l_btime" size="14" maxlength="512" value="{{ request.args.get('l_btime', '-1h') }}">
+    </label>
+    <label>End date
+        <input type="text" class="sql-text" name="l_etime" size="14" maxlength="512" value="{{ request.args.get('l_etime', '-0h') }}">
+    </label>
+    <label>Session id
+        <input type="text" class="sql-text" name="l_sid" size="14" maxlength="512" value="{{ request.args.get('l_sid', '') }}">
+    </label>
+    <label>SQL id
+        <input type="text" class="sql-text" name="l_sql_id" size="14" maxlength="512" value="{{ request.args.get('l_sql_id', '') }}">
+    </label>
+    <input type="hidden" name="do">
+    <input type="submit" value="Run">
+</form>
+{% include 'flashed.html' %}
+{% if data %}
+{% for item in data %}
+    {{ item|safe }}
+{% endfor %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,177 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9pt;
+  color: black;
+  margin: 0;
+  padding: 0;
+}
+
+input[type=search] {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9pt;
+}
+
+input, select {
+  display: block;
+}
+
+label {
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+label, input[type=submit] {
+  display: inline-block;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a:hover {
+  color: blueviolet;
+}
+
+tr:nth-child(odd) {
+  background: #faf0e6;
+}
+
+th, td {
+  padding: 0px 4px 0px 4px;
+}
+
+iframe {
+  height: calc(100vh - 140px);
+  width: calc(100vw - 204px);
+  border: 0px;
+}
+
+.message-page {
+  position: absolute;
+  top: 10%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.message-form {
+  text-align: center;
+}
+
+.flex-container {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  box-shadow: inset 0px 0px 0px 8px lightgray;
+}
+
+.flex-header {
+  display: flex;
+  border-bottom: 1px solid lightgray;
+  margin: 8px 16px 8px 16px;
+  padding-bottom: 8px;
+  align-items: flex-end;
+}
+
+.flex-body {
+  display: flex;
+  flex-grow: 1;
+  margin-bottom: 16px;
+}
+
+.flex-content {
+  flex-grow: 1;
+  flex: 1;
+  overflow: auto;
+  margin: 0px 16px 0px 8px;
+  max-height: calc(100vh - 100px);
+}
+
+
+.flex-menu {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid lightgray;
+  margin-left: 16px;
+  min-width: 160px;
+  overflow: auto;
+  max-height: calc(100vh - 100px);
+}
+
+.top-menu-item {
+  text-transform: uppercase;
+  padding: 8px;
+}
+
+.sub-menu-item {
+  padding: 8px;
+  padding-left: 16px;
+}
+
+.targets {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.selected, .attr-name {
+  font-weight: bold;
+}
+
+.form-caption {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.caption-sep {
+    color: darkgray;
+}
+
+.sql-text {
+  font-family: Consolas, Monaco, monospace;
+}
+
+.sql-full-text {
+  font-family: Consolas, Monaco, monospace;
+  white-space: pre-wrap;
+}
+
+.sql-hint {
+  display:inline-block;
+  font-size: 8pt;
+  margin-right: 4px;
+  padding: 2px 4px 2px 4px;
+  color: darkgray;
+  border: 1px solid darkgray;
+  border-radius: 2px;
+  cursor: copy;
+}
+
+.sql-hint:hover {
+  border-color: blueviolet;
+}
+
+.sql-hint-container {
+  padding-bottom: 8px;
+}
+
+
+.view-error {
+  color: tomato;
+}
+
+.table-hint {
+  font-size: 8pt;
+  color: darkgray;
+}
+
+.page-stat-hint {
+  text-align: right;
+  font-size: 8pt;
+  color: darkgray;
+}

@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block content %}
+<form method="get">
+    {% for k, v in g.parameters.items() %}
+    <label>{% if loop.index == 1 %}Required{% endif %}
+        <input type="text" class="sql-text" name="{{ k }}" maxlength="512" placeholder="{{ k + v }}" title="{{ k + v }}" size="{{ (k|length + v|length, 14)|max }}" value="{{ request.args.get(k, '') }}" required>
+    </label>
+    {% endfor %}
+    {% if g.parameters and g.optional %}<br>{% endif %}
+    {% if g.optional %}
+    {% for k, v in g.optional.items() %}
+    <label>{% if loop.index == 1 %}Optional{% endif %}
+        <input type="text" class="sql-text" name="{{ k }}" maxlength="512" placeholder="{{ k + v }}" title="{{ k + v }}" size="{{ (k|length + v|length, 14)|max }}" value="{{ request.args.get(k, '') }}">
+    </label>
+    {% endfor %}
+    <br>
+    {% endif %}
+    <label>Period
+        <input type="text" class="sql-text" name="period" size="6" value="{% if request.args.get('period') %}{{ request.args['period'] }}{% else %}{{ g.period }}{% endif %}">
+    </label>
+    <label>Priority
+        <select type="text" class="sql-text" name="priority" size="1">
+            <option value="1"{% if request.args.get('priority', 2) | int() == 1 %} selected{% endif %}>High</option>
+            <option value="2"{% if request.args.get('priority', 2) | int() == 2 %} selected{% endif %}>Normal</option>
+            <option value="3"{% if request.args.get('priority', 2) | int() == 3 %} selected{% endif %}>Low</option>
+        </select>
+    </label>
+    <label>Notify
+        <select type="text" class="sql-text" name="notify" size="1">
+            {% for k in g.notification_list.keys() %}
+            <option value="{{ k }}"{% if request.args.get('notify', '') == k|string %} selected{% endif %}>{{ g.notification_list[k] }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>Sound
+        <select type="text" class="sql-text" name="sound" size="1">
+            <option value="default"{% if request.args.get('sound', 'default') == 'default' %} selected{% endif %}>Default</option>
+            <option value="yes"{% if request.args.get('sound', 'default') == 'yes' %} selected{% endif %}>Yes</option>
+            <option value="no"{% if request.args.get('sound', 'default') == 'no' %} selected{% endif %}>No</option>
+        </select>
+    </label>
+    <label>Text
+        <input type="text" class="sql-text" name="text" size="20" maxlength="512" value="{% if request.args.get('text') %}{{ request.args['text'] }}{% endif %}">
+    </label>
+    <input type="hidden" name="do">
+    <input type="submit" value="Add">
+    {% if g.snail %}<span class="form-caption" title="This task could be very slow, other task will be waiting...">&#128012</span>{% endif %}
+</form>
+{% if uuid is defined %}
+<div>Task ...{{ uuid[-8:] }} created. See the <a href="/adm?task_id={{ uuid }}">Task list.</a></div>
+{% endif %}
+{% include 'flashed.html' %}
+{% endblock %}

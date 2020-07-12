@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block content %}
+<pre class="sql-text">
+    <b>Welcome to Watch</b>
+    It's a small web application created for Oracle DB monitoring.
+    Save any link to browser favs. Or share it to other person.
+    Use Ctrl+Click to open a link in a new tab.
+    Any text can be dragged to a filter field or to another tab.
+    Click &#9776; in result table to see the complete sql text.
+
+    <b>How to use filters</b>
+    Some views can accept sql-like filter expression. It's not a raw sql.
+    Internal parser converts it to "where statement" before run a query.
+    The parser allows to use very simple syntax:
+    [column] [operator] [value] [and | or ] [column] ...
+    Expression "IN ()" and braces are not supported yet.
+    "IS NULL" and "IS NOT NULL" will be parsed correctly. "IS  NOT    NULL" will not.
+    Datetime value can be set with '{{ config['DATETIME_FORMAT']}}' format.
+    Also you can use short format, for example -1d, which means "1 day before current date".
+    Available directives:
+        w - week
+        d - day
+        h - hour
+        m - minute
+        s - second
+    It is allowed to make not more than {{ config['MAX_DB_SESSIONS_PER_USER']}} queries at the moment.
+
+    <b>How to interact with Telegram bot</b>
+    Add the bot to your contacts. <a href="http://t.me/{{ config['BOT_NAME'] }}">Here is a link.</a>
+    Send /id command to the bot. You will receive your id. Send it to the system administrator.
+    After that you will be able to put notifications to private chat (choose "Me" in Notify list while creating a task).
+    Also some tasks can be added directly through a chat:
+        /wait [target] [sql_id]
+        /waits [target] [session_id]
+        /heavy [target] [exec_time_min] [temp_usage_gb]
+        /temp [target] [pct_used]
+        /ts [target] [pct_used] [tablespace_name_like]
+        /exp [target] [expires_in_days]
+        /uncommitted [target] [idle_time_minutes]
+</pre>
+{% endblock %}

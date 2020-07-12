@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block content %}
+{% block parameters %}
+<form method="get">
+    {% for k, v in g.parameters.items() %}
+    <label>{% if loop.index == 1 %}Required{% endif %}
+        <input type="text" class="sql-text" name="{{ k }}" maxlength="512" placeholder="{{ k + v }}" title="{{ k + v }}" size="{{ (k|length + v|length, 14)|max }}" value="{{ request.args.get(k, '') }}" required>
+    </label>
+    {% endfor %}
+    <label >Filter
+        <input type="text" class="sql-text" name="filter" maxlength="512"
+               value="{%- if 'filter' in request.args -%}
+                          {{ request.args['filter'] }}
+                      {%- else -%}
+                          {% if g.default_filters|length > 0 %}{{ g.default_filters[0] }}{% endif %}
+                      {%- endif -%}" size="70" autofocus>
+    </label>
+    <label>Sort
+        <input type="text" class="sql-text" name="sort" maxlength="512"
+               value="{% if 'sort' in request.args %}{{ request.args['sort'] }}{% else %}{{ g.default_sort }}{% endif %}" size="30">
+    </label>
+    <input type="hidden" name="do">
+    <input type="submit" value="Run">
+    {% if g.snail %}<span class="form-caption" title="This view could be very slow...">&#128012</span>{% endif %}
+</form>
+<div class="sql-hint-container">
+    {% for item in g.columns %}
+    <a class="sql-hint" draggable="true" ondragstart="event.dataTransfer.setData('text/plain', event.target.innerText)">{{ item }}</a>
+    {% endfor %}
+</div>
+<div class="sql-hint-container">
+{% for item in g.default_filters %}
+    {% if item %}<a class="sql-hint" draggable="true" ondragstart="event.dataTransfer.setData('text/plain', event.target.innerText)">{{ item }}</a>{% endif %}
+{% endfor %}
+</div>
+{% endblock %}
+{% include 'flashed.html' %}
+{% if data is defined %}
+{% block table %}
+{% if data %}
+{% if statement %}<div id="sql" class="table-hint" style="display: none; width: 70%;">{{ statement }}</div>{% endif %}
+<div class="table-hint">Fetched {{ data|length }} rows</div>
+    <table>
+        <tr><th>{% if statement %}<a onclick="e = document.getElementById('sql'); e.style.display = (e.style.display == 'none') ? 'block' : 'none';">&#9776;</a>{% endif %}</th>
+        {%- for item in g.columns -%}<th>{{ item|replace('_', ' ')|capitalize }}</th>{%- endfor -%}</tr>
+        {% for row in data %}
+        <tr><td align="right">{{ loop.index }}</td>
+           {%- for col in row -%}<td{% if g.types[loop.index0] == 'int' %} align="right"{% endif %}>
+                {%- if col is not none -%}
+                    {%- if loop.index0 == g.sql_id -%}
+                        <a href="/{{ request.view_args['target'] }}/Q/{{ col }}">{{ col }}</a>
+                    {%- elif loop.index0 == g.sid -%}
+                        <a href="/{{ request.view_args['target'] }}/S/{{ col }}">{{ '{:,}'.format(col).replace(',', ' ') }}</a>
+                    {%- elif loop.index0 == g.object_name and row[g.object_type] == 'TABLE' -%}
+                        <a href="/{{ request.view_args['target'] }}/T/{{ row[g.owner] }}/{{ col }}">{{ col }}</a>
+                    {%- elif loop.index0 == g.object_name and row[g.object_type] == 'VIEW' -%}
+                        <a href="/{{ request.view_args['target'] }}/V/{{ row[g.owner] }}/{{ col }}">{{ col }}</a>
+                    {%- elif loop.index0 == g.task_name -%}
+                        <a href="/{{ request.view_args['target'] }}/A/{{ row[g.owner] }}/{{ col }}">{{ col }}</a>
+                    {%- elif g.types[loop.index0] == 'int' -%}{{ '{:,}'.format(col).replace(',', ' ') }}
+                    {%- elif g.types[loop.index0] == 'datetime' -%}{{ col.strftime(config['DATETIME_FORMAT']) }}
+                    {%- else -%}{{ col }}
+                    {%- endif -%}
+                {%- if loop.index0 in g.pct_columns %} %{% endif %}{%- endif %}</td>
+            {%- endfor %}</tr>
+        {% endfor %}
+    </table>
+{% endif %}
+{% endblock %}
+{% endif %}
+{% if chart is defined %}
+    <embed type="image/svg+xml" src="{{ chart }}" />
+{% endif %}
+{% endblock %}

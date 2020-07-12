@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block content %}
+{% include 'flashed.html' %}
+{% if data %}
+    {% if g.content == 'html' %}
+    <iframe srcdoc="{{ data }}">
+    </iframe>
+    {% elif g.content == 'text' %}
+    <pre class="sql-full-text">
+        {% if data is string -%}
+            {{data}}
+        {% else %}
+        {% for item in data -%}
+            {{ item[0] }}
+        {% endfor %}
+        {% endif %}
+    </pre>
+    {% else %}
+        <table>
+        {% for attr in data %}
+            <tr><td class="attr-name">{{ g.columns[loop.index0]|replace('_', ' ')|capitalize }} </td><td>
+            {%- if attr is not none -%}
+            {%- if loop.index0 == g.sql_id -%}
+                <a href="/{{ request.view_args['target'] }}/Q/{{ attr }}">{{ attr }}</a>
+            {%- elif loop.index0 == g.sid -%}
+                <a href="/{{ request.view_args['target'] }}/S/{{ attr }}">{{ '{:,}'.format(attr).replace(',', ' ') }}</a>
+            {%- elif g.types[loop.index0] == 'int' -%}{{ '{:,}'.format(attr).replace(',', ' ') }}
+            {%- elif g.types[loop.index0] == 'datetime' -%}{{ attr.strftime(config['DATETIME_FORMAT']) }}
+            {%- else -%}{{ attr }}
+            {%- endif -%}
+            {%- endif %}</td></tr>
+        {% endfor %}
+        </table>
+    {% endif %}
+{% endif %}
+{% endblock %}

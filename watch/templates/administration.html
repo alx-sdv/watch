@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block content %}
+<table>
+    {% for item in info %}
+    <tr><td class="attr-name">{{ item[0] }}</td><td>{{ item[1] }}</td></tr>
+    {% endfor %}
+    {% set ns = namespace(error_count=0) %}
+    {% for task in task_pool.values() %}{% if task.state.endswith('error') %}{% set ns.error_count = ns.error_count + 1 %} {% endif %}{% endfor %}
+    <tr>
+        <td class="attr-name">Actions</td>
+        <td>
+            <a href="/task/reset_all">Reset all tasks ({{ ns.error_count }}); </a>
+            <a href="/stop_server" onclick="return confirm('Sure?')">Shutdown server;</a></td>
+    </tr>
+</table>
+{% if active_connections %}
+<br>
+<div>Active connections:</div>
+<table>
+    <tr><th>id</th><th>Acquired</th><th>User</th><th>Target</th><th>Statement</th><th>Action</th></tr>
+    {% for item in active_connections.keys() -%}
+    <tr>
+        <td>{{ item }}</td>
+        <td>{{ active_connections[item][1].strftime(config['DATETIME_FORMAT']) }}</td>
+        <td>{{ active_connections[item][2]}}</td>
+        <td>{{ active_connections[item][3]}}</td>
+        <td>{{ active_connections[item][4]}}</td>
+        <td>{% if active_connections[item][5] %}{{active_connections[item][5] }}{% else %}<a href="/cancel_sql?id={{ item }}">Cancel</a>{% endif %}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% if task_pool %}
+<br>
+<div>Active tasks:</div>
+{% include 'flashed.html' %}
+<table>
+    <tr><th>id</th><th>Name</th><th>Created</th><th>Priority</th><th>Target</th><th>Author</th><th>Recipient</th><th>Last call</th><th><abbr title="Last call duration, seconds">Dur.</abbr></th><th>Period</th><th>Execs</th><th>State</th><th>Parameters</th><th>Action</th></tr>
+    {% for task in task_pool.values() -%}
+    <tr>
+        <td align="right" class="{% if task_id == task.uuid %}selected{% endif %}"><a href="/task/browse?id={{ task.uuid }}">...{{ task.uuid[-8:] }}</a></td>
+        <td>{{ task.name }}</td>
+        <td>{{ task.create_date.strftime(config['DATETIME_FORMAT']) }}</td>
+        <td>{% if task.priority == 1 %}High{% elif task.priority == 2 %}Normal{% elif task.priority == 3 %}Low{% endif %} </td>
+        <td>{{ task.target }}</td>
+        <td>{{ task.user_name }}</td>
+        <td>{% if task.chat_id %}{% if config['BOT_CHAT_LIST'].get(task.chat_id|int, none) %}{{ config['BOT_CHAT_LIST'][task.chat_id|int] }}{% elif config['USERS'][task.user_name][1] == task.chat_id|int %}{{ task.user_name }}{% else %}{{ '?' }}{% endif %}{% endif %}</td>
+        <td>{% if task.last_call is not none %}{{ task.last_call.strftime(config['DATETIME_FORMAT']) }}{% endif %}</td>
+        <td align="right">{% if task.duration is not none %}{{ '{:,}'.format(task.duration).replace(',', ' ') }}{% endif %}</td>
+        <td>{{ task.period }}</td>
+        <td align="right">{{ '{:,}'.format(task.execs).replace(',', ' ') }}</td>
+        <td class="{% if task.state == 'run' %}selected{% endif %}">{{ task.state }}</td>
+        <td><a href="/task/browse?id={{ task.uuid }}">{{ task.parameters.values()|join(', ')|truncate(40, True) }}{% if task.optional %}; {{task.optional.values()|join(', ')|truncate(40, True) }}{% endif %}</a></td>
+        <td><a href="/task/cancel?id={{ task.uuid }}" onclick="return confirm('The task will be removed. This action cannot be undone.')">cancel</a>{% if task.state.endswith('error') %}, <a href="/task/reset?id={{ task.uuid }}">reset</a>{% endif %}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endblock%}
