@@ -79,6 +79,7 @@ Table stats | all_tab_statistics
 Index stats | all_ind_statistics
 Segments | dba_segments
 Segment usage | v$segment_statistics
+Index usage | dba_index_usage
 Tabspace usage | dba_free_space
 Tabspace fragmentation | dba_segments
 Users | dba_users

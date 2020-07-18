@@ -24,6 +24,7 @@ menu_tree = {'get_user': ['user', []]
                                           , 'get_index_stats'
                                           , 'get_segments'
                                           , 'get_segment_usage'
+                                          , 'get_index_usage'
                                           , 'get_tablespace_usage'
                                           , 'get_ts_fragmentation'
                                           , 'get_users'

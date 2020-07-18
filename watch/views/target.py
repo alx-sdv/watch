@@ -508,3 +508,22 @@ def get_synonyms(target):
                  , "statistic_name like '%write%'")
 def get_segment_usage(target):
     return render_page()
+
+
+@app.route('/<target>/index_usage')
+@title('Index usage')
+@template('list')
+@select("dba_index_usage iu left join all_indexes i on i.index_name = iu.name and i.owner = iu.owner")
+@columns({"i.table_name": 'str'
+          , "iu.owner": 'str'
+          , "iu.name": 'str'
+          , "i.num_rows": 'int'
+          , "iu.total_access_count": 'int'
+          , "iu.total_exec_count": 'int'
+          , "iu.total_rows_returned": 'int'
+          , "iu.last_used": 'datetime'})
+@default_filters(""
+                 , "table_name like '%FCT%'")
+@default_sort("last_used")
+def get_index_usage(target):
+    return render_page()

@@ -60,6 +60,12 @@ ENABLE_ACCESS_LOG = False
 # 0 value means that the worker will not be started. So you can turn it off if you are not going to create tasks.
 WORKER_FREQ_SEC = 10  # set to 0 to turn it off
 
+# Pause task worker in case of these errors:
+# ORA-12170: TNS:Connect timeout occurred
+# ORA-03113: end-of-file on communication channel
+# 0 means False, otherwise - sleep interval in seconds
+SLEEP_ON_FAIL_SEC = 0
+
 # Limit the maximum number of notifications to show in "Tasks notifications" view.
 MAX_KEPT_NOTIFICATIONS = 100
 

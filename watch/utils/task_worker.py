@@ -107,6 +107,10 @@ class Worker(threading.Thread):
                 except (DatabaseError, OperationalError) as e:
                     app.logger.error(f'{task.uuid} {e.args[0].message}')
                     task.state = 'db error'
+                    if app.config['SLEEP_ON_FAIL_SEC'] > 0 and e.args[0].code in (12170, 3113):
+                       app.logger.error(f"Sleeping for {app.config['SLEEP_ON_FAIL_SEC']} seconds...")
+                       sleep(app.config['SLEEP_ON_FAIL_SEC'])
+                       break
             sleep(app.config['WORKER_FREQ_SEC'])
 
     def shutdown(self):
