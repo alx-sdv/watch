@@ -1,6 +1,6 @@
 # Watch
 ![Python 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8d35de9129b4497385b6aa7446893038)](https://www.codacy.com/app/dtbx/watch?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=alx-sdv/watch&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/181f83eb661045db82e7dbfa66b598c7)](https://www.codacy.com/manual/dtbx/watch?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=alx-sdv/watch&amp;utm_campaign=Badge_Grade)
 
 Is another try to make a monitoring of the Oracle Database more handy.
 
