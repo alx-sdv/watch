@@ -254,6 +254,9 @@ def wait_for_uncommitted(t):
 @snail()
 def wait_for_ts(t):
     """Notification will be sent again only when the threshold be crossed."""
+    p = {'pct_used': t.parameters['pct_used'], 'tablespace_name': t.optional.get('tablespace_name')}
+    if not p['tablespace_name']:
+        p.pop('tablespace_name')
     r = execute(t.target
                 , "select * from (select t.tablespace_name,"
                   " round((max_files_size - (files.free_files_space + free.free_space)) / 1024 / 1024 / 1024) used_gb,"
@@ -269,8 +272,8 @@ def wait_for_ts(t):
                   " sum(decode(maxbytes, 0, bytes, maxbytes)) max_files_size,"
                   " sum(decode(maxbytes, 0, bytes, maxbytes)) - sum(bytes) free_files_space"
                   " from dba_data_files group by tablespace_name) files  on t.tablespace_name = files.tablespace_name)"
-                  " where pct_used >= :pct_used and tablespace_name like :tablespace_name"
-                , {'pct_used': t.parameters['pct_used'], 'tablespace_name': t.optional.get('tablespace_name', '%')}
+                  " where pct_used >= :pct_used{}".format(' and tablespace_name like :tablespace_name' if t.optional.get('tablespace_name') else '')
+                , p
                 , 'many'
                 , False)
     return t.get_message(r, lambda o, i: f'Tablespace {i[0]} on {o.target} is {i[3]}%'
