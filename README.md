@@ -2,7 +2,7 @@
 ![Python 3.6](https://img.shields.io/badge/python-3.6-brightgreen.svg)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/181f83eb661045db82e7dbfa66b598c7)](https://www.codacy.com/manual/dtbx/watch?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=alx-sdv/watch&amp;utm_campaign=Badge_Grade)
 
-Is another try to make a monitoring of the Oracle Database more handy.
+Is another try to make Oracle Database monitoring more handy.
 
 This app created for people who have to deal with long-term sql queries. In other words, if you are data warehouse developer or admin, it could be helpful.
 
